@@ -1,4 +1,4 @@
-# jgsp-e2e-tests
+# jgsp-e2e
 E2e tests for jgsp project
 <br/>
 <br/>

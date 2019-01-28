@@ -1,5 +1,6 @@
 package com.mjvs.jgspe2e.transport_admin.zone;
 
+import com.mjvs.jgspe2e.pages.LoginPage;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
 import org.openqa.selenium.By;
@@ -7,6 +8,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -21,7 +23,6 @@ import static org.junit.Assert.*;
 // Tests depend on each other, execute only all tests together
 // and don`t change their execution order !!!
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@Ignore
 public class ZonePageTests
 {
     private final String ZoneHomePage = "http://localhost:4200/transport/zone";
@@ -35,21 +36,32 @@ public class ZonePageTests
     private final String LineButtonCss = ".lineButton";
     private final String LineManipulateButtonCss = ".manipulateButton";
     private final String LineName = "1";
+    private static LoginPage loginPage;
+    private static String baseUrl = "http://localhost:4200";
+    private static String transportAdminUsername = "nenad";
+    private static String transportAdminPassword = "nenad";
     private static WebDriver browser;
 
     @BeforeClass
     public static void SetupSelenium() {
         //instantiate browser
-        System.setProperty("webdriver.chrome.driver", "D:\\Storage\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "src/test/resources/driver/chromedriver.exe");
         browser = new ChromeDriver();
         //maximize window
         browser.manage().window().maximize();
+        browser.navigate().to(baseUrl + "/login");
+        loginPage = PageFactory.initElements(browser, LoginPage.class);
+        loginPage.ensureIsVisbleUsername();
+        loginPage.ensureIsVisblePassword();
+        loginPage.setUsername(transportAdminUsername);
+        loginPage.setPassword(transportAdminPassword);
+        loginPage.ensureLoginButtonIsClickable();
+        loginPage.getLoginButton().click();
     }
 
     @Test
     public void TestA_ShowAllZones()
     {
-        browser.navigate().to("http://localhost:4200/transport");
         // wait for page to load
         WaitUntilZonePageIsShown();
 

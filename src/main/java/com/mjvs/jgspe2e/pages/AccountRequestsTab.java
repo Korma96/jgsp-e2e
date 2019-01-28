@@ -23,6 +23,9 @@ public class AccountRequestsTab {
     @FindBy(className = "toast-message")
     private WebElement toastr;
 
+    @FindBy(className = "toast-message")
+    private List<WebElement> toastrs;
+
     public AccountRequestsTab(WebDriver driver) {
         this.driver = driver;
     }
@@ -78,5 +81,10 @@ public class AccountRequestsTab {
 
     public void setToastr(WebElement toastr) {
         this.toastr = toastr;
+    }
+
+    public void ensureIsInvisibleToastrs() {
+        new WebDriverWait(driver, 10)
+                .until(ExpectedConditions.invisibilityOfAllElements(toastrs));
     }
 }

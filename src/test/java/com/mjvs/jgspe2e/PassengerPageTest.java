@@ -3,6 +3,7 @@ package com.mjvs.jgspe2e;
 import com.mjvs.jgspe2e.pages.*;
 import org.junit.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -33,11 +35,13 @@ public class PassengerPageTest {
     private PassengerPage passengerPage;
     private BuyTicketTab buyTicketTab;
     private ShowTicketsTab showTicketsTab;
-    private ModalDilaog modalDilaog;
+    private ModalDilaog modalDialog;
     private ChangeAccountTypeTab changeAccountTypeTab;
     private LogoutButton logoutButton;
     private UserAdminPage userAdminPage;
     private AccountRequestsTab accountRequestsTab;
+    private ShowScheduleTab showScheduleTab;
+    private PositionsOfVehiclesTab positionsOfVehiclesTab;
 
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm");
 
@@ -57,11 +61,13 @@ public class PassengerPageTest {
         passengerPage = PageFactory.initElements(browser, PassengerPage.class);
         buyTicketTab = PageFactory.initElements(browser, BuyTicketTab.class);
         showTicketsTab = PageFactory.initElements(browser, ShowTicketsTab.class);
-        modalDilaog = PageFactory.initElements(browser, ModalDilaog.class);
+        modalDialog = PageFactory.initElements(browser, ModalDilaog.class);
         changeAccountTypeTab = PageFactory.initElements(browser, ChangeAccountTypeTab.class);
         logoutButton = PageFactory.initElements(browser, LogoutButton.class);
         userAdminPage = PageFactory.initElements(browser, UserAdminPage.class);
         accountRequestsTab = PageFactory.initElements(browser, AccountRequestsTab.class);
+        showScheduleTab = PageFactory.initElements(browser, ShowScheduleTab.class);
+        positionsOfVehiclesTab = PageFactory.initElements(browser, PositionsOfVehiclesTab.class);
 
         loginPage.ensureIsVisbleUsername();
         loginPage.ensureIsVisblePassword();
@@ -92,12 +98,12 @@ public class PassengerPageTest {
         buyTicketTab.ensureIsVisibleToastrError();
         assertEquals("The price has not been successfully delivered!",
                 buyTicketTab.getToastrEror().getText().trim());
-        modalDilaog.ensureIsVisiblePrice();
-        assertEquals("Please wait...", modalDilaog.getPrice().getText().trim());
+        modalDialog.ensureIsVisiblePrice();
+        assertEquals("Please wait...", modalDialog.getPrice().getText().trim());
         // Gasimo dialog za potvrdu kupovine
-        modalDilaog.ensureIsClickableCancelPurchaseButton();
-        modalDilaog.getCancelPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableCancelPurchaseButton();
+        modalDialog.getCancelPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
 
         // Izaberemo metro za transport i pokusamo kupiti ticket
         buyTicketTab.ensureIsVisibleTransport();
@@ -108,12 +114,12 @@ public class PassengerPageTest {
         buyTicketTab.ensureIsVisibleToastrError();
         assertEquals("The price has not been successfully delivered!",
                 buyTicketTab.getToastrEror().getText().trim());
-        modalDilaog.ensureIsVisiblePrice();
-        assertEquals("Please wait...", modalDilaog.getPrice().getText().trim());
+        modalDialog.ensureIsVisiblePrice();
+        assertEquals("Please wait...", modalDialog.getPrice().getText().trim());
         // Gasimo dialog za potvrdu kupovine
-        modalDilaog.ensureIsClickableCancelPurchaseButton();
-        modalDilaog.getCancelPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableCancelPurchaseButton();
+        modalDialog.getCancelPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
 
         // Izaberemo metro za transport i pokusamo kupiti ticket
         buyTicketTab.ensureIsVisibleDate();
@@ -176,14 +182,14 @@ public class PassengerPageTest {
         buyTicketTab.ensureIsClickableBuyTicketButton();
         buyTicketTab.getBuyTicketButton().click();
         // Otvorio se dodatni dialog za pregled i potvrdu kupovine ticket-a
-        modalDilaog.ensureIsClickableConfirmPurchaseButton();
-        modalDilaog.getConfirmPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableConfirmPurchaseButton();
+        modalDialog.getConfirmPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
         // Odlazimo na tab show tickets da bismo videli koliko ima ticket-a nakon kupovine jednog ticket-a
         passengerPage.ensureIsClickableShowTicketsTab();
         passengerPage.getShowTicketsTab().click();
         showTicketsTab.ensureIsVisibleTickets();
-        showTicketsTab.ensureIsTicketsSuccessLoaded();
+        passengerPage.ensureIsTicketSuccessfullyBought();
         int newNumOfTickets = showTicketsTab.getNumOfTickets();
         assertEquals(newNumOfTickets, oldNumOfTickets + 1);
         oldNumOfTickets = newNumOfTickets;
@@ -198,14 +204,14 @@ public class PassengerPageTest {
         buyTicketTab.ensureIsClickableBuyTicketButton();
         buyTicketTab.getBuyTicketButton().click();
         // Otvorio se dodatni dialog za pregled i potvrdu kupovine ticket-a
-        modalDilaog.ensureIsClickableConfirmPurchaseButton();
-        modalDilaog.getConfirmPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableConfirmPurchaseButton();
+        modalDialog.getConfirmPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
         // Odlazimo na tab show tickets da bismo videli koliko ima ticket-a nakon kupovine jednog ticket-a
         passengerPage.ensureIsClickableShowTicketsTab();
         passengerPage.getShowTicketsTab().click();
         showTicketsTab.ensureIsVisibleTickets();
-        showTicketsTab.ensureIsTicketsSuccessLoaded();
+        passengerPage.ensureIsTicketSuccessfullyBought();
         newNumOfTickets = showTicketsTab.getNumOfTickets();
         assertEquals(newNumOfTickets, oldNumOfTickets + 1);
         oldNumOfTickets = newNumOfTickets;
@@ -220,14 +226,14 @@ public class PassengerPageTest {
         buyTicketTab.ensureIsClickableBuyTicketButton();
         buyTicketTab.getBuyTicketButton().click();
         // Otvorio se dodatni dialog za pregled i potvrdu kupovine ticket-a
-        modalDilaog.ensureIsClickableConfirmPurchaseButton();
-        modalDilaog.getConfirmPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableConfirmPurchaseButton();
+        modalDialog.getConfirmPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
         // Odlazimo na tab show tickets da bismo videli koliko ima ticket-a nakon kupovine jednog ticket-a
         passengerPage.ensureIsClickableShowTicketsTab();
         passengerPage.getShowTicketsTab().click();
         showTicketsTab.ensureIsVisibleTickets();
-        showTicketsTab.ensureIsTicketsSuccessLoaded();
+        passengerPage.ensureIsTicketSuccessfullyBought();
         newNumOfTickets = showTicketsTab.getNumOfTickets();
         assertEquals(newNumOfTickets, oldNumOfTickets + 1);
         oldNumOfTickets = newNumOfTickets;
@@ -249,14 +255,14 @@ public class PassengerPageTest {
         buyTicketTab.ensureIsClickableBuyTicketButton();
         buyTicketTab.getBuyTicketButton().click();
         // Otvorio se dodatni dialog za pregled i potvrdu kupovine ticket-a
-        modalDilaog.ensureIsClickableConfirmPurchaseButton();
-        modalDilaog.getConfirmPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableConfirmPurchaseButton();
+        modalDialog.getConfirmPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
         // Odlazimo na tab show tickets da bismo videli koliko ima ticket-a nakon kupovine jednog ticket-a
         passengerPage.ensureIsClickableShowTicketsTab();
         passengerPage.getShowTicketsTab().click();
         showTicketsTab.ensureIsVisibleTickets();
-        showTicketsTab.ensureIsTicketsSuccessLoaded();
+        passengerPage.ensureIsTicketSuccessfullyBought();
         newNumOfTickets = showTicketsTab.getNumOfTickets();
         assertEquals(newNumOfTickets, oldNumOfTickets + 1);
         oldNumOfTickets = newNumOfTickets;
@@ -281,14 +287,14 @@ public class PassengerPageTest {
         buyTicketTab.ensureIsClickableBuyTicketButton();
         buyTicketTab.getBuyTicketButton().click();
         // Otvorio se dodatni dialog za pregled i potvrdu kupovine ticket-a
-        modalDilaog.ensureIsClickableConfirmPurchaseButton();
-        modalDilaog.getConfirmPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableConfirmPurchaseButton();
+        modalDialog.getConfirmPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
         // Odlazimo na tab show tickets da bismo videli koliko ima ticket-a nakon kupovine jednog ticket-a
         passengerPage.ensureIsClickableShowTicketsTab();
         passengerPage.getShowTicketsTab().click();
         showTicketsTab.ensureIsVisibleTickets();
-        showTicketsTab.ensureIsTicketsSuccessLoaded();
+        passengerPage.ensureIsTicketSuccessfullyBought();
         newNumOfTickets = showTicketsTab.getNumOfTickets();
         assertEquals(newNumOfTickets, oldNumOfTickets + 1);
         oldNumOfTickets = newNumOfTickets;
@@ -309,14 +315,14 @@ public class PassengerPageTest {
         buyTicketTab.ensureIsClickableBuyTicketButton();
         buyTicketTab.getBuyTicketButton().click();
         // Otvorio se dodatni dialog za pregled i potvrdu kupovine ticket-a
-        modalDilaog.ensureIsClickableConfirmPurchaseButton();
-        modalDilaog.getConfirmPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableConfirmPurchaseButton();
+        modalDialog.getConfirmPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
         // Odlazimo na tab show tickets da bismo videli koliko ima ticket-a nakon kupovine jednog ticket-a
         passengerPage.ensureIsClickableShowTicketsTab();
         passengerPage.getShowTicketsTab().click();
         showTicketsTab.ensureIsVisibleTickets();
-        showTicketsTab.ensureIsTicketsSuccessLoaded();
+        passengerPage.ensureIsTicketSuccessfullyBought();
         newNumOfTickets = showTicketsTab.getNumOfTickets();
         assertEquals(newNumOfTickets, oldNumOfTickets + 1);
         oldNumOfTickets = newNumOfTickets;
@@ -331,14 +337,14 @@ public class PassengerPageTest {
         buyTicketTab.ensureIsClickableBuyTicketButton();
         buyTicketTab.getBuyTicketButton().click();
         // Otvorio se dodatni dialog za pregled i potvrdu kupovine ticket-a
-        modalDilaog.ensureIsClickableConfirmPurchaseButton();
-        modalDilaog.getConfirmPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableConfirmPurchaseButton();
+        modalDialog.getConfirmPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
         // Odlazimo na tab show tickets da bismo videli koliko ima ticket-a nakon kupovine jednog ticket-a
         passengerPage.ensureIsClickableShowTicketsTab();
         passengerPage.getShowTicketsTab().click();
         showTicketsTab.ensureIsVisibleTickets();
-        showTicketsTab.ensureIsTicketsSuccessLoaded();
+        passengerPage.ensureIsTicketSuccessfullyBought();
         newNumOfTickets = showTicketsTab.getNumOfTickets();
         assertEquals(newNumOfTickets, oldNumOfTickets + 1);
         oldNumOfTickets = newNumOfTickets;
@@ -365,25 +371,25 @@ public class PassengerPageTest {
         buyTicketTab.ensureIsClickableBuyTicketButton();
         buyTicketTab.getBuyTicketButton().click();
         // Otvorio se dodatni dialog za pregled i potvrdu kupovine ticket-a
-        modalDilaog.ensureIsClickableConfirmPurchaseButton();
-        modalDilaog.getConfirmPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableConfirmPurchaseButton();
+        modalDialog.getConfirmPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
         // Kupimo jos jednu
         buyTicketTab.ensureIsClickableBuyTicketButton();
         buyTicketTab.getBuyTicketButton().click();
         // Otvorio se dodatni dialog za pregled i potvrdu kupovine ticket-a
-        modalDilaog.ensureIsClickableConfirmPurchaseButton();
-        modalDilaog.getConfirmPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableConfirmPurchaseButton();
+        modalDialog.getConfirmPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
         buyTicketTab.ensureIsVisibleTicketType();
         //kupujemo kartu za danasnji datum, jer ce ona odmah poceti da vazi, i ocekujemo da necemo smeti da je obrisemo
         new Select(buyTicketTab.getTicketType()).selectByVisibleText("daily");
         buyTicketTab.ensureIsClickableBuyTicketButton();
         buyTicketTab.getBuyTicketButton().click();
         // Otvorio se dodatni dialog za pregled i potvrdu kupovine ticket-a
-        modalDilaog.ensureIsClickableConfirmPurchaseButton();
-        modalDilaog.getConfirmPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableConfirmPurchaseButton();
+        modalDialog.getConfirmPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
         //Zatim pokusavamo kupiti kartu za sutrasnji datum, sem ako je danas vec poslednji dan u tekucem mesecu,
         //jer za kartu koju pocinje da vazi od sutra, ocekujemo da cemo moci da je obrisemo
         LocalDate date = LocalDate.now();
@@ -399,9 +405,9 @@ public class PassengerPageTest {
         buyTicketTab.ensureIsClickableBuyTicketButton();
         buyTicketTab.getBuyTicketButton().click();
         // Otvorio se dodatni dialog za pregled i potvrdu kupovine ticket-a
-        modalDilaog.ensureIsClickableConfirmPurchaseButton();
-        modalDilaog.getConfirmPurchaseButton().click();
-        modalDilaog.ensureIsInvisibleDialog();
+        modalDialog.ensureIsClickableConfirmPurchaseButton();
+        modalDialog.getConfirmPurchaseButton().click();
+        modalDialog.ensureIsInvisibleDialog();
 
         // Odlazimo na tab show tickets da bismo testirali activate, download i remove ticket
         passengerPage.ensureIsClickableShowTicketsTab();
@@ -530,9 +536,11 @@ public class PassengerPageTest {
         assertEquals("Request to change the account type was successfully sent!",
                 changeAccountTypeTab.getToastrs().get(0).getText().trim());
 
+        // izlogujemo se
         logoutButton.ensureLogoutButtonIsClickable();
         logoutButton.getLogoutButton().click();
 
+        // logujemo se kao userAdmin
         loginPage.ensureIsVisbleUsername();
         loginPage.ensureIsVisblePassword();
         loginPage.setUsername(userAdminUsername);
@@ -545,8 +553,11 @@ public class PassengerPageTest {
 
         accountRequestsTab.ensureIsClikableShowImageButton();
         accountRequestsTab.getShowImageButton().click();
-        modalDilaog.ensureIsClickableCloseButton();
-        modalDilaog.getCloseButton().click();
+        modalDialog.ensureIsClickableCloseButton();
+        modalDialog.getCloseButton().click();
+
+        modalDialog.ensureIsInvisibleDialog();
+        accountRequestsTab.ensureIsInvisibleToastrs();
 
         // ne prihvatamo request
         accountRequestsTab.ensureIsClikableDeclineButton();
@@ -555,9 +566,11 @@ public class PassengerPageTest {
         accountRequestsTab.ensureIsVisibleToastr();
         assertEquals("Successfully reviewed request!", accountRequestsTab.getToastr().getText());
 
+        // izlogujemo se
         logoutButton.ensureLogoutButtonIsClickable();
         logoutButton.getLogoutButton().click();
 
+        // opet se ulogujemo kao passenger
         loginPage.ensureIsVisbleUsername();
         loginPage.ensureIsVisblePassword();
         loginPage.setUsername(passengerUsername);
@@ -593,9 +606,11 @@ public class PassengerPageTest {
         assertEquals("Request to change the account type was successfully sent!",
                 changeAccountTypeTab.getToastrs().get(0).getText().trim());
 
+        // izlogujemo se
         logoutButton.ensureLogoutButtonIsClickable();
         logoutButton.getLogoutButton().click();
 
+        // logujemo se kao userAdmin
         loginPage.ensureIsVisbleUsername();
         loginPage.ensureIsVisblePassword();
         loginPage.setUsername(userAdminUsername);
@@ -608,8 +623,11 @@ public class PassengerPageTest {
 
         accountRequestsTab.ensureIsClikableShowImageButton();
         accountRequestsTab.getShowImageButton().click();
-        modalDilaog.ensureIsClickableCloseButton();
-        modalDilaog.getCloseButton().click();
+        modalDialog.ensureIsClickableCloseButton();
+        modalDialog.getCloseButton().click();
+
+        modalDialog.ensureIsInvisibleDialog();
+        accountRequestsTab.ensureIsInvisibleToastrs();
 
         // prihvatamo request
         accountRequestsTab.ensureIsClikableAcceptButton();
@@ -618,9 +636,11 @@ public class PassengerPageTest {
         accountRequestsTab.ensureIsVisibleToastr();
         assertEquals("Successfully reviewed request!", accountRequestsTab.getToastr().getText());
 
+        // izlogujemo se
         logoutButton.ensureLogoutButtonIsClickable();
         logoutButton.getLogoutButton().click();
 
+        // i za kraj logujemo se ponovo kao passenger
         loginPage.ensureIsVisbleUsername();
         loginPage.ensureIsVisblePassword();
         loginPage.setUsername(passengerUsername);
@@ -637,6 +657,166 @@ public class PassengerPageTest {
         currentPassengerType = changeAccountTypeTab.getCurrentPassengerType().getText().trim();
         assertNotEquals(oldPassengerType, currentPassengerType);
         assertEquals(selectedPassengerType, currentPassengerType);
+    }
+
+    @Test
+    public void showSchedule() {
+        // sacekacemo da se prikazu linije i uklone oblacici sa porukama
+        showTicketsTab.ensureIsVisibleTickets();
+        showTicketsTab.ensureIsInvisibleToastrs();
+        passengerPage.ensureIsClickableShowScheduleTab();
+        passengerPage.getShowScheduleTab().click();
+
+        // Izabracemo bus za transport, selektovati prigradske_linije za zonu,
+        // 24 za liniju i Saturday za dan za koji hocemo da nam se prikaze schedule
+        showScheduleTab.ensureIsVisbileTransport();
+        new Select(showScheduleTab.getTransport()).selectByIndex(0);
+        showScheduleTab.ensureIsVisbileZone();
+        new Select(showScheduleTab.getZone()).selectByVisibleText("prigradske_linije");
+        showScheduleTab.ensureIsVisbileLine();
+        String selectedLine = "24";
+        new Select(showScheduleTab.getLine()).selectByVisibleText(selectedLine);
+        showScheduleTab.ensureIsVisbileDay();
+        new Select(showScheduleTab.getDay()).selectByVisibleText("Saturday");
+        showScheduleTab.ensureIsInvisibleToastrs();
+        showScheduleTab.ensureIsClickableShowButton();
+        showScheduleTab.getShowButton().click();
+        showScheduleTab.ensureIsVisbileToastr();
+        assertEquals("Times, for checked line, are successfully loaded!",showScheduleTab.getToastr().getText().trim());
+        showScheduleTab.ensureIsVisbileSchedules();
+        assertEquals(1, showScheduleTab.getSchedules().size());
+        assertEquals("Line: " + selectedLine, showScheduleTab.getSchedules().get(0).getText().trim());
+
+        // Izabracemo metro za transport, ocekujemo da ima jedna zona za ovaj transport, ali nijedna linija za ovu zonu.
+        // Ipak pokusavamo prikazati schedule. Ocekujemo error poruku u oblacicu.
+        showScheduleTab.ensureIsVisbileTransport();
+        new Select(showScheduleTab.getTransport()).selectByIndex(2);
+        showScheduleTab.ensureIsInvisibleToastrs();
+        showScheduleTab.ensureIsClickableShowButton();
+        showScheduleTab.getShowButton().click();
+        showScheduleTab.ensureIsVisbileToastr();
+        assertEquals("You have not selected any line!",showScheduleTab.getToastr().getText().trim());
+
+        // Zatim cemo opet izabrati bus za transport, selektovati medjumesne_linije za zonu, i 31, 32, 60 za linije,
+        // i Workday za dan za koji hocemo da nam se prikaze schedule.
+        // Ocekujemo da se prikazu sva tri schedule-a.
+        showScheduleTab.ensureIsVisbileTransport();
+        new Select(showScheduleTab.getTransport()).selectByIndex(0);
+        showScheduleTab.ensureIsVisbileZone();
+        new Select(showScheduleTab.getZone()).selectByVisibleText("medjumesne_linije");
+        showScheduleTab.ensureIsVisbileLine();
+        List<String> selectedLines = Arrays.asList("31", "32", "60");
+        Select select = new Select(showScheduleTab.getLine());
+        selectedLines.stream().forEach(sl -> select.selectByVisibleText(sl));
+        showScheduleTab.ensureIsVisbileDay();
+        new Select(showScheduleTab.getDay()).selectByVisibleText("Workday");
+        showScheduleTab.ensureIsInvisibleToastrs();
+        showScheduleTab.ensureIsClickableShowButton();
+        showScheduleTab.getShowButton().click();
+        showScheduleTab.ensureIsVisbileToastr();
+        assertEquals("Times, for checked line, are successfully loaded!",showScheduleTab.getToastr().getText().trim());
+        showScheduleTab.ensureIsVisbileSchedules();
+        assertEquals(3, showScheduleTab.getSchedules().size());
+        for(int i = 0; i < selectedLines.size(); i++) assertEquals("Line: " + selectedLines.get(i),
+                showScheduleTab.getSchedules().get(i).getText().trim());
+
+        // Selektujemo gradske_linije za zonu, i 1, 1Z, 2, 3 za linije,
+        // i Sunday za dan za koji hocemo da nam se prikaze schedule.
+        // Ocekujemo da se prikazu sva cetiri schedule-a.
+        showScheduleTab.ensureIsVisbileZone();
+        new Select(showScheduleTab.getZone()).selectByVisibleText("gradske_linije");
+        showScheduleTab.ensureIsVisbileLine();
+        selectedLines = Arrays.asList("1", "1Z", "2", "3");
+        selectedLines.stream().forEach(sl -> select.selectByVisibleText(sl));
+        showScheduleTab.ensureIsVisbileDay();
+        new Select(showScheduleTab.getDay()).selectByVisibleText("Sunday");
+        showScheduleTab.ensureIsInvisibleToastrs();
+        showScheduleTab.ensureIsClickableShowButton();
+        showScheduleTab.getShowButton().click();
+        showScheduleTab.ensureIsVisbileToastr();
+        assertEquals("Times, for checked line, are successfully loaded!",showScheduleTab.getToastr().getText().trim());
+        showScheduleTab.ensureIsVisbileSchedules();
+        assertEquals(4, showScheduleTab.getSchedules().size());
+        for(int i = 0; i < selectedLines.size(); i++) assertEquals("Line: " + selectedLines.get(i),
+                showScheduleTab.getSchedules().get(i).getText().trim());
+    }
+
+    @Test
+    public void positionsOfVehicles() {
+        int numOfStationsForLine1A = 18;
+        int numOfStationsForLine2B = 13;
+        int numOfBusesForLine = 3;
+
+
+        // Prebacujemo se na tab postions of vehicles
+        passengerPage.ensureIsClickablePositionsOfVehiclesTab();
+        passengerPage.getPositionsOfVehiclesTab().click();
+
+        //skrolujemo malo na dole
+        JavascriptExecutor jse = (JavascriptExecutor) browser;
+        jse.executeScript("window.scrollBy(0,500)");
+
+        // filtriramo checkbox-ove za linije koje pripadaju busovim zonama
+        positionsOfVehiclesTab.ensureIsVisibleTransport();
+        new Select(positionsOfVehiclesTab.getTransport()).selectByIndex(1);
+
+        // utvrdjuemo da linija 1B nije aktivna, i da je njen checkBox disable-ovan
+        positionsOfVehiclesTab.ensureIsVisibleLine1B();
+        positionsOfVehiclesTab.ensureIsDisabledLine1B();
+
+        // iscrtavamo putanju linije 1A, njene stanice i buseve koji se voze na toj liniji
+        positionsOfVehiclesTab.ensureIsClickableLine1A();
+        positionsOfVehiclesTab.getLine1A().click();
+
+        positionsOfVehiclesTab.ensureIsVisibleBlueStations(numOfStationsForLine1A);
+        assertEquals(numOfStationsForLine1A,positionsOfVehiclesTab.getBlueStations().size()/2);
+
+        positionsOfVehiclesTab.ensureIsVisibleBuses(numOfBusesForLine);
+        assertEquals(numOfBusesForLine, positionsOfVehiclesTab.getBuses().size()/2);
+
+        // uklanjamo prikaz buseva za liniju 1A
+        positionsOfVehiclesTab.ensureIsClickablePositionsOfVehiclesCheckBox();
+        positionsOfVehiclesTab.getPositionsOfVehiclesCheckBox().click();
+
+        positionsOfVehiclesTab.ensureIsInvisibleBuses();
+
+        // ponovo iscrtavamo buseve za liniju 1A
+        positionsOfVehiclesTab.ensureIsClickablePositionsOfVehiclesCheckBox();
+        positionsOfVehiclesTab.getPositionsOfVehiclesCheckBox().click();
+
+        // uklanjamo putanju linije 1A, sve stanice i sve buseve koji se voze na ovoj liniji
+        positionsOfVehiclesTab.ensureIsClickableLine1A();
+        positionsOfVehiclesTab.getLine1A().click();
+
+        positionsOfVehiclesTab.ensureIsInvisibleBlueStations();
+        positionsOfVehiclesTab.ensureIsInvisibleBuses();
+
+        // iscrtavamo putanju linije 2B, njene stanice i buseve koji se voze na toj liniji
+        positionsOfVehiclesTab.ensureIsClickableLine2B();
+        positionsOfVehiclesTab.getLine2B().click();
+
+        positionsOfVehiclesTab.ensureIsVisibleRedStations(numOfStationsForLine2B);
+        assertEquals(numOfStationsForLine2B,positionsOfVehiclesTab.getRedStations().size()/2);
+
+        positionsOfVehiclesTab.ensureIsVisibleBuses(numOfBusesForLine);
+        assertEquals(numOfBusesForLine, positionsOfVehiclesTab.getBuses().size()/2);
+
+        // uklanjamo prikaz buseva za liniju 2B
+        positionsOfVehiclesTab.ensureIsClickablePositionsOfVehiclesCheckBox();
+        positionsOfVehiclesTab.getPositionsOfVehiclesCheckBox().click();
+
+        positionsOfVehiclesTab.ensureIsInvisibleBuses();
+
+        // ponovo iscrtavamo buseve za liniju 2B
+        positionsOfVehiclesTab.ensureIsClickablePositionsOfVehiclesCheckBox();
+        positionsOfVehiclesTab.getPositionsOfVehiclesCheckBox().click();
+
+        // uklanjamo putanju linije 2B, sve stanice i sve buseve koji se voze na ovoj liniji
+        positionsOfVehiclesTab.ensureIsClickableLine2B();
+        positionsOfVehiclesTab.getLine2B().click();
+
+        positionsOfVehiclesTab.ensureIsInvisibleRedStations();
+        positionsOfVehiclesTab.ensureIsInvisibleBuses();
     }
 
     @After

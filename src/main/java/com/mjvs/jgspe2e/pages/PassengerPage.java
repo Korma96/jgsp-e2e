@@ -19,6 +19,15 @@ public class PassengerPage {
     @FindBy(id = "nav-change-account-type-tab")
     private WebElement changeAccountTypeTab;
 
+    @FindBy(id = "nav-show-schedule-tab")
+    private WebElement showScheduleTab;
+
+    @FindBy(id = "nav-positions-of-vehicles-tab")
+    private WebElement positionsOfVehiclesTab;
+
+    @FindBy(className = "toast-message")
+    private WebElement toastr;
+
 
     public PassengerPage(WebDriver driver) {
         this.driver = driver;
@@ -48,6 +57,22 @@ public class PassengerPage {
         this.changeAccountTypeTab = changeAccountTypeTab;
     }
 
+    public WebElement getShowScheduleTab() {
+        return showScheduleTab;
+    }
+
+    public void setShowScheduleTab(WebElement showScheduleTab) {
+        this.showScheduleTab = showScheduleTab;
+    }
+
+    public WebElement getPositionsOfVehiclesTab() {
+        return positionsOfVehiclesTab;
+    }
+
+    public void setPositionsOfVehiclesTab(WebElement positionsOfVehiclesTab) {
+        this.positionsOfVehiclesTab = positionsOfVehiclesTab;
+    }
+
     public void ensureIsClickableBuyTicketTab() {
         new WebDriverWait(driver, 10)
                 .until(ExpectedConditions.elementToBeClickable(buyTicketTab));
@@ -61,5 +86,25 @@ public class PassengerPage {
     public void ensureIsClickableShowTicketsTab() {
         new WebDriverWait(driver, 10)
                 .until(ExpectedConditions.elementToBeClickable(showTicketsTab));
+    }
+
+    public void ensureIsClickableShowScheduleTab() {
+        new WebDriverWait(driver, 10)
+                .until(ExpectedConditions.elementToBeClickable(showScheduleTab));
+    }
+
+    public void ensureIsVisbileToastr() {
+        new WebDriverWait(driver, 10)
+                .until(ExpectedConditions.visibilityOf(toastr));
+    }
+
+    public void ensureIsTicketSuccessfullyBought() {
+        new WebDriverWait(driver, 10)
+                .until(ExpectedConditions.textToBePresentInElement(toastr, "You have successfully bought a ticket!"));
+    }
+
+    public void ensureIsClickablePositionsOfVehiclesTab() {
+        new WebDriverWait(driver, 10)
+                .until(ExpectedConditions.elementToBeClickable(positionsOfVehiclesTab));
     }
 }

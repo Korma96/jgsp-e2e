@@ -9,10 +9,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class BuyTicketTab {
     private WebDriver driver;
 
-    @FindBy(id = "id_transport_type")
+    @FindBy(id = "id_transport_type_in_buy_ticket")
     private WebElement transport;
 
-    @FindBy(id = "id_zone")
+    @FindBy(id = "id_zone_in_buy_ticket")
     private WebElement zone;
 
     @FindBy(css = "label[for='color-zone']")
@@ -21,7 +21,7 @@ public class BuyTicketTab {
     @FindBy(css = "label[for='color-line']")
     private WebElement ticketForLine;
 
-    @FindBy(id = "id_line")
+    @FindBy(id = "id_line_in_buy_ticket")
     private WebElement line;
 
     @FindBy(id = "id_ticket_type")

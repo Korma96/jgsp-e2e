@@ -23,8 +23,7 @@ public class ShowTicketsTab {
     @FindBy(className = "toast-message")
     private List<WebElement> toastrs;
 
-    @FindBy(className = "toast-message")
-    private WebElement toastr;
+
 
 
     public ShowTicketsTab(WebDriver driver) {
@@ -63,11 +62,6 @@ public class ShowTicketsTab {
     public void ensureIsInvisibleToastrs() {
         new WebDriverWait(driver, 10)
                 .until(ExpectedConditions.invisibilityOfAllElements(toastrs));
-    }
-
-    public void ensureIsTicketsSuccessLoaded() {
-        new WebDriverWait(driver, 10)
-        .until(ExpectedConditions.textToBePresentInElement(toastr, "Tickets are successfully loaded!"));
     }
 
     public void ensureIsInvisibleButton(WebElement button) {

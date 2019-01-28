@@ -96,7 +96,7 @@ public class ModalDilaog {
     }
 
     public void ensureIsInvisibleDialog() {
-        new WebDriverWait(driver, 10)
+        new WebDriverWait(driver, 20)
                 .until(ExpectedConditions.invisibilityOf(dialog));
     }
 

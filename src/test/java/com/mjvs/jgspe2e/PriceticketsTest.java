@@ -1,7 +1,6 @@
 package com.mjvs.jgspe2e;
 
-import com.mjvs.jgspe2e.pages.AddPriceticketPage;
-import com.mjvs.jgspe2e.pages.LoginPage;
+import com.mjvs.jgspe2e.pages.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -14,6 +13,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 
 import static org.junit.Assert.*;
@@ -95,6 +95,8 @@ public class PriceticketsTest {
         addPriceticketPage.ensureAddButtonIsClickable();
         addPriceticketPage.getAddButton().click();
 
+        addPriceticketPage.ensureIsInvisibleToastrs();
+
         pricetickets = browser.findElements(By.cssSelector("table tbody tr div"));
 
         if(currentSize != pricetickets.size()){
@@ -123,6 +125,11 @@ public class PriceticketsTest {
         new WebDriverWait(browser, 20)
                 .until(ExpectedConditions.elementToBeClickable( buttonsDelete.get(indexForDelete)));
         buttonsDelete.get(indexForDelete).click();
+
+        WebElement tst = browser.findElement(By.cssSelector("div.toast-message"));
+
+        new WebDriverWait(browser, 10)
+                .until(ExpectedConditions.invisibilityOfAllElements(tst));
 
         pricetickets = browser.findElements(By.cssSelector("table tbody tr div"));
         assertEquals(currentSize-1,pricetickets.size());
@@ -179,6 +186,11 @@ public class PriceticketsTest {
                 .until(ExpectedConditions.elementToBeClickable(save));
         save.click();
 
+        tst = browser.findElement(By.cssSelector("div.toast-message"));
+
+        new WebDriverWait(browser, 10)
+                .until(ExpectedConditions.invisibilityOfAllElements(tst));
+
         //pricelineField = browser.findElement(By.id("priceline"));
         assertTrue(!pricelineField.getAttribute("value").equals(oldPriceline));
         //pricezoneField = browser.findElement(By.id("pricezone"));
@@ -192,7 +204,7 @@ public class PriceticketsTest {
         WaitUntilPriceticketPageIsShown();
 
 
-       /* buttonsEdit = browser.findElements(By.cssSelector("table tbody tr div button[class='btn btn-primary']"));
+        /*buttonsEdit = browser.findElements(By.cssSelector("table tbody tr div button[class='btn btn-primary']"));
         new WebDriverWait(browser, 30)
                 .until(ExpectedConditions.elementToBeClickable(buttonsEdit.get(indexForEdit)));
         buttonsEdit.get(indexForEdit).click();

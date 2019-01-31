@@ -35,7 +35,7 @@ public class ZonePageTests
     private final String ZoneRemoveButtonCss = ".seconddd";
     private final String LineButtonCss = ".lineButton";
     private final String LineManipulateButtonCss = ".manipulateButton";
-    private final String LineName = "1";
+    private final String LineName = "10";
     private static LoginPage loginPage;
     private static String baseUrl = "http://localhost:4200";
     private static String transportAdminUsername = "nenad";

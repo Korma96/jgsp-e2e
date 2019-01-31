@@ -6,6 +6,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.List;
+
 public class BuyTicketTab {
     private WebDriver driver;
 
@@ -39,6 +41,9 @@ public class BuyTicketTab {
 
     @FindBy(css = "div.toast-message")
     private WebElement toastrEror;
+
+    @FindBy(className = "toast-message")
+    private List<WebElement> toastrs;
 
     public BuyTicketTab(WebDriver driver) {
         this.driver = driver;
@@ -174,6 +179,11 @@ public class BuyTicketTab {
     public void ensureIsVisibleMonth() {
         new WebDriverWait(driver, 10)
                 .until(ExpectedConditions.visibilityOf(month));
+    }
+
+    public void ensureIsInvisibleToastrs() {
+        new WebDriverWait(driver, 10)
+                .until(ExpectedConditions.invisibilityOfAllElements(toastrs));
     }
 
 }

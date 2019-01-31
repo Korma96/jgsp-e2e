@@ -159,6 +159,7 @@ public class PassengerPageTest {
         passengerPage.ensureIsClickableBuyTicketTab();
         passengerPage.getBuyTicketTab().click();
         //**********************************************
+        buyTicketTab.ensureIsInvisibleToastrs();
         buyTicketTab.ensureIsClickableBuyTicketButton();
         buyTicketTab.getBuyTicketButton().click();
         // Nije moguce dobiti cenu jer trenutno ne postoji cenovnik za metro

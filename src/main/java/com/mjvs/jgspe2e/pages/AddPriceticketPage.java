@@ -6,6 +6,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.List;
+
 public class AddPriceticketPage {
     private WebDriver driver;
 
@@ -31,8 +33,8 @@ public class AddPriceticketPage {
     @FindBy(xpath = "//input[@type='submit']")
     private WebElement addButton;
 
-   /* @FindBy(css = "div.toast-message")
-    private  WebElement toastMessage;*/
+    @FindBy(css = "div.toast-message")
+    private List<WebElement> toastMessages;
 
     public AddPriceticketPage(){
 
@@ -84,7 +86,7 @@ public class AddPriceticketPage {
     }
 
     public void setZone(String zone) {
- //       this.zone.clear();
+        //       this.zone.clear();
         this.zone.sendKeys(zone);
     }
 
@@ -112,13 +114,13 @@ public class AddPriceticketPage {
         this.pricezone = pricezone;
     }
 
-   /* public WebElement getToastMessage() {
-        return toastMessage;
+    public List<WebElement> getToastMessages() {
+        return toastMessages;
     }
 
-    public void setToastMessage(WebElement toastMessage) {
-        this.toastMessage = toastMessage;
-    }*/
+    public void setToastMessages(List<WebElement> toastMessages) {
+        this.toastMessages = toastMessages;
+    }
 
     public WebElement getPriceline() {
         return priceline;
@@ -186,6 +188,16 @@ public class AddPriceticketPage {
         new WebDriverWait(driver, 10)
                 .until(ExpectedConditions.elementToBeClickable(addButton));
 
+    }
+
+    public void ensureIsVisibleToastrs() {
+        new WebDriverWait(driver, 10)
+                .until(ExpectedConditions.visibilityOfAllElements(toastMessages));
+    }
+
+    public void ensureIsInvisibleToastrs() {
+        new WebDriverWait(driver, 10)
+                .until(ExpectedConditions.invisibilityOfAllElements(toastMessages));
     }
 
 }

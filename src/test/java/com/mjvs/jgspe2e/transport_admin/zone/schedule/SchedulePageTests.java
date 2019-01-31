@@ -36,7 +36,7 @@ public class SchedulePageTests
     private final String[] saturdayTimeA = new String[]{"04:22", "PM"};
     private final String[] workdayTimeB = new String[]{"04:33", "PM"};
     private final String[] saturdayTimeB= new String[]{"12:11", "AM"};
-    private final String lineName = "1";
+    private final String lineName = "11";
     private static final int timeout = 10;
     private static WebDriver browser;
 
